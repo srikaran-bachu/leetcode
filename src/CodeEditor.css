@@ -1,0 +1,45 @@
+/* src/CodeEditor.css */
+.code-editor {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.editor-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.editor-header label {
+    margin-right: 10px;
+}
+
+.editor-header select {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+}
+
+.run-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.run-button:hover {
+    background-color: #45a049;
+}
