@@ -1,10 +1,7 @@
-/* src/CodeEditor.css */
 .code-editor {
-    position: relative;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 10px;
 }
 
 .editor-header {
@@ -15,31 +12,37 @@
     color: white;
 }
 
-.editor-header label {
-    margin-right: 10px;
-}
-
-.editor-header select {
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
-    outline: none;
-}
-
 .run-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    align-self: flex-start;
     background-color: #4caf50;
     color: white;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .run-button:hover {
     background-color: #45a049;
+}
+
+.terminal-output {
+    background-color: #1e1e1e;
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-y: auto;
+    max-height: 200px;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+.terminal-output h3 {
+    color: #00ff00;
+    margin: 0 0 5px 0;
+}
+
+.terminal-output pre {
+    margin: 0;
 }
