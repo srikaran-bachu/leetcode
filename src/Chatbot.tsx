@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Chatbot.css';
 
-// Define props type
 interface ChatbotProps {
-  editorCode: string; // This is the prop passed from App.tsx
+  editorCode: string;
+  question: { id: number; title: string; description: string };
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ editorCode }) => {
+const Chatbot: React.FC<ChatbotProps> = ({ editorCode, question }) => {
   const [messages, setMessages] = useState<{ user: string; bot: string | null }[]>([]);
   const [userInput, setUserInput] = useState('');
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -14,35 +14,37 @@ const Chatbot: React.FC<ChatbotProps> = ({ editorCode }) => {
   const sendMessage = async () => {
     if (userInput.trim() === '') return;
 
-    // Add user message to the chat
-    setMessages((prevMessages) => [...prevMessages, { user: userInput, bot: null }]);
+    // Add the user's message to the chat
+    const userMessage = { user: userInput, bot: null };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      // Send the message and editor code to the backend
       const response = await fetch('http://localhost:5000/api/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: userInput, code: editorCode }),
+        body: JSON.stringify({
+          prompt: userInput,
+          code: editorCode,
+          question_id: question.id,
+        }),
       });
 
       const data = await response.json();
       const botMessage = data.response || "Sorry, I couldn't understand that.";
 
-      // Update the chat with the bot response only (not adding the user message again)
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1 ? { ...msg, bot: botMessage } : msg
-        )
-      );
+      // Add the bot's response as a new message
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { user: '', bot: botMessage },
+      ]);
     } catch (error) {
       console.error('Error communicating with the chatbot API:', error);
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1 ? { ...msg, bot: 'Error: Could not reach the server.' } : msg
-        )
-      );
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { user: '', bot: 'Error: Could not reach the server.' },
+      ]);
     }
 
     setUserInput(''); // Clear the input field
@@ -59,11 +61,24 @@ const Chatbot: React.FC<ChatbotProps> = ({ editorCode }) => {
     <div className="chatbot">
       <div ref={chatContainerRef} className="chatbot-messages">
         {messages.map((msg, index) => (
-          <div key={index} className="message">
-            <p>
-              <strong>User:</strong> {msg.user}
-            </p>
-            {msg.bot && <p><strong>AI:</strong> {msg.bot}</p>}
+          <div key={index} className={`message ${msg.bot ? 'bot' : 'user'}`}>
+            {msg.user && (
+              <div className="user-message">
+                <strong>User:</strong> {msg.user}
+              </div>
+            )}
+            {msg.bot && (
+              <div className="bot-message">
+                <strong>AI:</strong>
+                <pre>
+                  <code
+                    dangerouslySetInnerHTML={{
+                      __html: msg.bot.replace(/\n/g, '<br>').replace(/```/g, ''),
+                    }}
+                  />
+                </pre>
+              </div>
+            )}
           </div>
         ))}
       </div>
