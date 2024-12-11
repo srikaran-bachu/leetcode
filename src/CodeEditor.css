@@ -2,14 +2,15 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 10px;
 }
 
-.editor-header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #1e1e1e;
-    color: white;
+.dropdown {
+    margin-bottom: 10px;
+}
+
+.question {
+    margin-bottom: 10px;
 }
 
 .run-button {
@@ -20,7 +21,7 @@
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
-    margin-top: 10px;
+    font-size: 16px;
 }
 
 .run-button:hover {
@@ -32,17 +33,8 @@
     color: #00ff00;
     padding: 10px;
     border-radius: 5px;
+    max-height: 150px; /* Adjusted height */
     overflow-y: auto;
-    max-height: 200px;
     font-family: monospace;
     white-space: pre-wrap;
-}
-
-.terminal-output h3 {
-    color: #00ff00;
-    margin: 0 0 5px 0;
-}
-
-.terminal-output pre {
-    margin: 0;
 }
