@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 10px;
+    height: 100%; /* Ensures the editor takes full height */
 }
 
 .dropdown {
@@ -28,13 +29,28 @@
     background-color: #45a049;
 }
 
+.terminal-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 10px;
+    width: 100%;
+    flex-grow: 1; /* Ensures the terminal takes remaining space */
+}
+
 .terminal-output {
     background-color: #1e1e1e;
     color: #00ff00;
     padding: 10px;
     border-radius: 5px;
-    max-height: 150px; /* Adjusted height */
+    height: 200px; /* Fixed height to ensure consistency */
     overflow-y: auto;
     font-family: monospace;
     white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+    .terminal-output {
+        height: 150px;
+    }
 }

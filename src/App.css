@@ -8,11 +8,13 @@
   background-image: url('https://via.placeholder.com/1920x1080'); /* Replace with your background */
   background-size: cover;
   background-position: center;
+  padding: 20px; /* Add padding for better spacing on smaller screens */
+  box-sizing: border-box; /* Include padding in the total width/height */
 }
 
 .chatbot-container,
 .code-editor-container {
-  height: 80vh;  /* Adjust this for smaller components */
+  height: 80vh; /* Keep this consistent for both containers */
   margin: 10px;
   border-radius: 15px;
   overflow: hidden;
@@ -20,12 +22,39 @@
 }
 
 .chatbot-container {
-  width: 30vw;
+  width: 30vw; /* Chatbot takes less space */
   border-right: 1px solid #ddd;
   background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  display: flex; /* Ensure child elements are positioned neatly */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: flex-start; /* Align items at the top */
 }
 
 .code-editor-container {
-  width: 50vw;
+  width: 60vw; /* Code editor takes more space */
   background-color: #282c34;
+  display: flex; /* Ensure the code editor layout is consistent */
+  flex-direction: column; /* Stack elements like editor and terminal */
+  justify-content: space-between; /* Ensure terminal stays visible */
+  padding: 10px;
+  box-sizing: border-box; /* Ensure padding doesn't break the layout */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column; /* Stack chatbot and code editor vertically */
+    height: auto; /* Allow containers to grow naturally */
+  }
+
+  .chatbot-container,
+  .code-editor-container {
+    width: 90%; /* Take almost the full width of the screen */
+    height: auto; /* Allow height to adjust */
+    margin: 10px auto; /* Center horizontally */
+  }
+
+  .chatbot-container {
+    border-right: none; /* Remove border when stacked */
+  }
 }

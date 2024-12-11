@@ -5,14 +5,15 @@ import './CodeEditor.css';
 
 interface CodeEditorProps {
     onCodeChange: (code: string) => void; // Prop to notify changes in code
+    onQuestionChange: (question: { id: number; title: string; description: string }) => void; // Notify parent when question changes
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange, onQuestionChange }) => {
     const editorRef = useRef<any>(null);
     const [questions, setQuestions] = useState<any[]>([]);
     const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
     const [language, setLanguage] = useState<string>('python'); // Default to Python
-    const [output, setOutput] = useState<string>(''); // For terminal output
+    const [output, setOutput] = useState<string>('Welcome to the terminal.\n'); // Default terminal output
 
     // Fetch questions from the backend on page load
     useEffect(() => {
@@ -33,15 +34,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
         const questionId = parseInt(event.target.value, 10);
         const selected = questions.find((q) => q.id === questionId);
         setSelectedQuestion(selected || null);
-        setOutput(''); // Clear the terminal when a new question is selected
+
+        // Notify the parent component about the selected question
+        if (selected) {
+            onQuestionChange(selected);
+            setOutput((prevOutput) => `${prevOutput}\nQuestion selected: ${selected.title}\n`);
+        }
+
+        // Pre-fill the editor with starter code
+        if (editorRef.current && selected && selected.starterCode) {
+            editorRef.current.setValue(selected.starterCode);
+        }
     };
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setLanguage(event.target.value);
         if (event.target.value !== 'python') {
-            setOutput('Warning: Test cases only work for Python.');
-        } else {
-            setOutput('');
+            setOutput((prevOutput) => `${prevOutput}\nWarning: Test cases only work for Python.`);
         }
     };
 
@@ -54,11 +63,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
     const handleRunClick = async () => {
         const code = editorRef.current.getValue();
         if (!selectedQuestion) {
-            setOutput('Please select a question first.');
+            setOutput((prevOutput) => `${prevOutput}\nPlease select a question first.`);
             return;
         }
         if (language !== 'python') {
-            setOutput('Test cases are only available for Python at the moment.');
+            setOutput((prevOutput) => `${prevOutput}\nTest cases are only available for Python at the moment.`);
             return;
         }
 
@@ -82,10 +91,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
                         Actual: ${r.actual_output}\n`
                 )
                 .join('\n');
-            setOutput(resultOutput);
+            setOutput((prevOutput) => `${prevOutput}\n${resultOutput}`);
         } catch (error) {
             console.error('Error running code:', error);
-            setOutput('Error: Could not reach the server.');
+            setOutput((prevOutput) => `${prevOutput}\nError: Could not reach the server.`);
         }
     };
 
@@ -127,11 +136,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
 
             {/* Code editor */}
             <Editor
-                height="300px" // Adjusted height
+                height="300px"
                 language={language}
                 theme="vs-dark"
                 onMount={(editor) => (editorRef.current = editor)}
-                onChange={handleEditorChange} // Trigger on every change
+                onChange={handleEditorChange}
             />
 
             {/* Run button */}
@@ -140,9 +149,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
             </button>
 
             {/* Terminal output */}
-            <div className="terminal-output">
-                <h3>Terminal</h3>
-                <pre>{output}</pre>
+            <div className="terminal-container">
+               <div className="terminal-output">
+                    <pre>{output}</pre>
+                </div>
             </div>
         </div>
     );
